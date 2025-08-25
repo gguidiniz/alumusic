@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AluMusic - Relatório Semanal</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"/>
+</head>
+<body>
+    <main class="container">
+        <header>
+            <h1>📊 Relatório Semanal de Comentários</h1>
+            <p>Análise dos feedbacks recebidos nos últimos 7 dias.</p>
+        </header>
+
+        <grid>
+            <article>
+                <header><strong>Categorias de Comentários</strong></header>
+                <canvas id="categoriesChart"></canvas>
+            </article>
+            <article>
+                <header><strong>Top 10 Tags Mais Mencionadas</strong></header>
+                <canvas id="topTagsChart"></canvas>
+            </article>
+        </grid>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const reportData = {{ report_data | tojson }};
+
+        const ctxCategories = document.getElementById('categoriesChart');
+        new Chart(ctxCategories, {
+            type: 'pie',
+            data: {
+                labels: reportData.categories_chart.labels,
+                datasets: [{
+                    label: 'Quantidade',
+                    data: reportData.categories_chart.data,
+                    backgroundColor: [
+                        '#2ecc71', // Elogio
+                        '#e74c3c', // Crítica
+                        '#3498db', // Sugestão
+                        '#f1c40f', // Dúvida
+                        '#95a5a6' // Spam
+                    ],
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                }
+            }
+        });
+
+        const ctxTopTags = document.getElementById('topTagsChart');
+        new Chart(ctxTopTags, {
+            type: 'bar',
+            data: {
+                labels: reportData.top_tags_chart.labels,
+                datasets: [{
+                    label: 'Nº de Menções',
+                    data: reportData.top_tags_chart.data,
+                    backgroundColor: '#3498db',
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+            }
+        });
+    </script>
+</body>
+</html>
