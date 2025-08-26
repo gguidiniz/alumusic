@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required
 from pydantic import ValidationError
 from concurrent.futures import ThreadPoolExecutor
 
@@ -10,6 +11,7 @@ from app.core.extensions import db
 api_bp = Blueprint('api', __name__, url_prefix='/api')
 
 @api_bp.route('/comments', methods=['POST'])
+@jwt_required()
 def criar_comentario():
     json_data = request.get_json()
 
