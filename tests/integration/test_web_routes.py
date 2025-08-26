@@ -1,6 +1,6 @@
 from flask.testing import FlaskClient
 from app.core.extensions import db
-from app.models.comment import Comment, Classification
+from app.models import Comment, Classification
 
 def test_weekly_report_page(test_client: FlaskClient):
     comment1 = Comment(external_id='test-uuid-1', text='Comentário de teste 1')

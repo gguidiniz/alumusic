@@ -1,5 +1,5 @@
 from app.core.extensions import db
-from app.models.comment import Comment, Classification, Tag
+from app.models import Comment, Classification, Tag
 from app.schemas.comment_schema import CommentSchema, ClassificationResultSchema
 
 class CommentRepository:
