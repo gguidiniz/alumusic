@@ -8,6 +8,15 @@ class CommentRepository:
         comment_data: CommentSchema,
         classification_result: ClassificationResultSchema
     ) -> Comment:
+        
+        comment = db.session.query(Comment).filter_by(external_id=str(comment_data.id)).first()
+        if not comment:
+            comment = Comment(
+                external_id=str(comment_data.id),
+                text=comment_data.text
+            )
+            db.session.add(comment)
+
         tags_to_associate = []
         for tag_data in classification_result.tags:
             tag = db.session.query(Tag).filter_by(name=tag_data.tag).first()
@@ -19,19 +28,11 @@ class CommentRepository:
         new_classification = Classification(
             category=classification_result.category,
             confidence=classification_result.confidence,
-            tags=tags_to_associate
+            tags=tags_to_associate,
+            comment=comment
         )
 
-        comment = db.session.query(Comment).filter_by(external_id=str(comment_data.id)).first()
-        if not comment:
-            comment = Comment(
-                external_id=str(comment_data.id),
-                text=comment_data.text
-            )
-
-        comment.classifications.append(new_classification)
-
-        db.session.add(comment)
+        db.session.add(new_classification)
 
         return comment
     
