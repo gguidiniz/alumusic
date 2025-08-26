@@ -3,6 +3,7 @@ from app.core.config import settings as default_settings
 from app.core.extensions import db, migrate, jwt, cache
 from app.web.routes import main_bp
 from app.cli import register_cli_commands
+from app.api.auth_routes import auth_bp
 
 from app.api.comment_routes import api_bp
 
@@ -23,6 +24,7 @@ def create_app(settings_override=None):
 
     app.register_blueprint(api_bp)
     app.register_blueprint(main_bp)
+    app.register_blueprint(auth_bp)
 
     register_cli_commands(app)
 
