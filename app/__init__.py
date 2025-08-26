@@ -2,6 +2,7 @@ from flask import Flask
 from app.core.config import settings as default_settings
 from app.core.extensions import db, migrate, jwt, cache
 from app.web.routes import main_bp
+from app.cli import register_cli_commands
 
 from app.api.comment_routes import api_bp
 
@@ -18,10 +19,12 @@ def create_app(settings_override=None):
     jwt.init_app(app)
     cache.init_app(app)
 
-    from app.models import comment
+    from app.models import User, Comment
 
     app.register_blueprint(api_bp)
     app.register_blueprint(main_bp)
+
+    register_cli_commands(app)
 
     @app.route("/healthcheck")
     def healthcheck():
