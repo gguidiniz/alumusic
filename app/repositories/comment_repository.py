@@ -1,6 +1,6 @@
 from app.core.extensions import db
 from app.models import Comment, Classification, Tag
-from app.schemas.comment_schema import CommentSchema, ClassificationResultSchema
+from app.schemas import CommentSchema, ClassificationResultSchema
 
 class CommentRepository:
     def save_comment_classification(

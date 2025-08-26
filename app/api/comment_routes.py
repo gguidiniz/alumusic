@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from pydantic import ValidationError
 from concurrent.futures import ThreadPoolExecutor
 
-from app.schemas.comment_schema import CommentSchema, ClassificationResultSchema
+from app.schemas import CommentSchema, ClassificationResultSchema
 from app.services.classification_service import classify_comment
 from app.repositories.comment_repository import comment_repository
 from app.core.extensions import db
