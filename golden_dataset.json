@@ -1,0 +1,22 @@
+[
+    {
+        "text": "Simplesmente a melhor música do ano! A letra me tocou profundamente e a produção está impecável.",
+        "expected_category": "ELOGIO"
+    },
+    {
+        "text": "O show foi bom, mas acabou muito rápido. Fiquei com a sensação de que poderiam ter tocado mais umas 3 músicas.",
+        "expected_category": "SUGESTÃO"
+    },
+    {
+        "text": "Alguém sabe me dizer se a versão do clipe é a mesma que está no álbum?",
+        "expected_category": "DÚVIDA"
+    },
+    {
+        "text": "O som estava horrível, o baixo engoliu tudo e a voz do cantor sumiu. Decepcionante.",
+        "expected_category": "CRÍTICA"
+    },
+    {
+        "text": "Compre computadores agora com 50% de desconto!!!",
+        "expected_category": "SPAM"
+    }
+]

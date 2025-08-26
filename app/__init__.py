@@ -1,14 +1,17 @@
 from flask import Flask
-from app.core.config import settings
+from app.core.config import settings as default_settings
 from app.core.extensions import db, migrate, jwt
 from app.web.routes import main_bp
 
 from app.api.comment_routes import api_bp
 
-def create_app():
+def create_app(settings_override=None):
     app = Flask(__name__, template_folder='web/templates')
 
-    app.config.from_object(settings)
+    if settings_override:
+        app.config.from_object(settings_override)
+    else:
+        app.config.from_object(default_settings)
 
     db.init_app(app)
     migrate.init_app(app, db)
