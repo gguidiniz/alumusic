@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from pydantic import ValidationError
+from concurrent.futures import ThreadPoolExecutor
 
 from app.schemas.comment_schema import CommentSchema, ClassificationResultSchema
 from app.services.classification_service import classify_comment
@@ -21,10 +22,14 @@ def criar_comentario():
     try:
         validated_comments = [CommentSchema.model_validate(item) for item in comments_to_process]
 
-        results = []
-        for comment_data in validated_comments:
-            classification_output = classify_comment(comment_data.text)
+        texts_to_classify = [comment.text for comment in validated_comments]
+        
+        classification_outputs = []
+        with ThreadPoolExecutor(max_workers=5) as executor:
+            classification_outputs = list(executor.map(classify_comment, texts_to_classify))
 
+        results = []
+        for comment_data, classification_output in zip(validated_comments, classification_outputs):
             if not classification_output:
                 continue
 
@@ -55,4 +60,5 @@ def criar_comentario():
         return jsonify({"erro": "Dados inválidos", "detalhes": e.errors()}), 422
     except Exception as e:
         db.session.rollback()
+        print(f"Erro inesperado: {e}")
         return jsonify({"erro": "Ocorreu um erro interno no servidor"}), 500
