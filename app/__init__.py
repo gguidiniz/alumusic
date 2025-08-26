@@ -1,6 +1,6 @@
 from flask import Flask
 from app.core.config import settings as default_settings
-from app.core.extensions import db, migrate, jwt
+from app.core.extensions import db, migrate, jwt, cache
 from app.web.routes import main_bp
 
 from app.api.comment_routes import api_bp
@@ -16,6 +16,7 @@ def create_app(settings_override=None):
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
+    cache.init_app(app)
 
     from app.models import comment
 

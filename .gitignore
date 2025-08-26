@@ -9,3 +9,5 @@ env/
 .vscode/
 
 .DS_Store
+
+instance/
