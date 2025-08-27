@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, Response
+from flask import Blueprint, render_template, Response, request
 from flask_jwt_extended import jwt_required
 from app.services.report_service import report_service
 from app.core.extensions import cache
@@ -22,8 +22,18 @@ def login_page():
 @main_bp.route('/dashboard')
 @jwt_required()
 def dashboard_page():
-    latest_comments = comment_repository.get_latest_comments()
-    return render_template('dashboard.html', comments=latest_comments)
+    search_term = request.args.get('q', None)
+
+    if search_term:
+        comments_list = comment_repository.search_comments(search_term)
+    else:
+        comments_list = comment_repository.get_latest_comments()
+
+    return render_template(
+        'dashboard.html',
+        comments=comments_list,
+        search_term=search_term
+    )
 
 @main_bp.route('/export/csv')
 @jwt_required()

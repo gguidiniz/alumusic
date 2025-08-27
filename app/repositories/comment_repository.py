@@ -57,4 +57,21 @@ class CommentRepository:
             .all()
         )
     
+    def search_comments(self, search_term: str, limit: int = 20):
+        query = (
+            db.session.query(Comment)
+            .options(
+                db.joinedload(Comment.classifications).joinedload(Classification.tags)
+            )
+        )
+
+        if search_term:
+            query = query.filter(Comment.text.ilike(f"%{search_term}%"))
+
+        return (
+            query.order_by(Comment.created_at.desc())
+            .limit(limit)
+            .all()
+        )
+    
 comment_repository = CommentRepository()
