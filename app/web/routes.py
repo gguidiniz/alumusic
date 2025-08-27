@@ -1,8 +1,10 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, Response
 from flask_jwt_extended import jwt_required
 from app.services.report_service import report_service
 from app.core.extensions import cache
 from app.repositories.comment_repository import comment_repository
+import io
+import csv
 
 main_bp = Blueprint('main', __name__)
 
@@ -22,3 +24,34 @@ def login_page():
 def dashboard_page():
     latest_comments = comment_repository.get_latest_comments()
     return render_template('dashboard.html', comments=latest_comments)
+
+@main_bp.route('/export/csv')
+@jwt_required()
+def export_csv():
+    all_comments = comment_repository.get_all_comments_with_latest_classification()
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+
+    writer.writerow(['ID Externo', 'Data', 'Texto', 'Categoria', 'Confiança', 'Tags'])
+
+    for comment in all_comments:
+        if comment.classifications:
+            latest_classification = comment.classifications[-1]
+            tags = ", ".join([tag.name for tag in latest_classification.tags])
+            writer.writerow([
+                str(comment.external_id),
+                comment.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                comment.text,
+                latest_classification.category,
+                latest_classification.confidence,
+                tags
+            ])
+
+    output.seek(0)
+
+    return Response(
+        output,
+        mimetype="text/csv",
+        headers={"Content-Disposition": "attachment;filename=relatorio_comentarios.csv"}
+    )

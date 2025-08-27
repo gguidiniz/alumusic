@@ -47,4 +47,14 @@ class CommentRepository:
             .all()
         )
     
+    def get_all_comments_with_latest_classification(self):
+        return (
+            db.session.query(Comment)
+            .options(
+                db.joinedload(Comment.classifications).joinedload(Classification.tags)
+            )
+            .order_by(Comment.created_at.desc())
+            .all()
+        )
+    
 comment_repository = CommentRepository()
