@@ -36,4 +36,15 @@ class CommentRepository:
 
         return comment
     
+    def get_latest_comments(self, limit: int = 20):
+        return (
+            db.session.query(Comment)
+            .options(
+                db.joinedload(Comment.classifications).joinedload(Classification.tags)
+            )
+            .order_by(Comment.created_at.desc())
+            .limit(limit)
+            .all()
+        )
+    
 comment_repository = CommentRepository()

@@ -2,6 +2,7 @@ from flask import Blueprint, render_template
 from flask_jwt_extended import jwt_required
 from app.services.report_service import report_service
 from app.core.extensions import cache
+from app.repositories.comment_repository import comment_repository
 
 main_bp = Blueprint('main', __name__)
 
@@ -19,4 +20,5 @@ def login_page():
 @main_bp.route('/dashboard')
 @jwt_required()
 def dashboard_page():
-    return"<h1>Bem-vindo ao Dashboard!<h1>"
+    latest_comments = comment_repository.get_latest_comments()
+    return render_template('dashboard.html', comments=latest_comments)

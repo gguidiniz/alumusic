@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AluMusic - Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"/>
+</head>
+<body>
+    <main class="container">
+        <nav>
+            <ul>
+                <li><strong>AluMusic Dashboard</strong></li>
+            </ul>
+            <ul>
+                <li><a href="/relatorio/semanal" target="_blank">Relatório Público</a></li>
+            </ul>
+        </nav>
+
+        <hgroup>
+            <h2>Últimos Comentários Recebidos</h2>
+            <p>Visualizando os comentários e suas classificações mais recentes.</p>
+        </hgroup>
+
+        <figure>
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Data</th>
+                        <th scope="col">Comentários</th>
+                        <th scope="col">Categoria</th>
+                        <th scope="col">Tags</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for comment in comments %}
+                    <tr>
+                        <td>{{ comment.created_at.strftime('%d/%m/%y %H:%M') }}</td>
+                        <td>{{ comment.text }}</td>
+                        {% if comment.classifications %}
+                            {% set latest_classification = comment.classifications[-1] %}
+                            <td>
+                                <span title="Confiança: {{ latest_classification.confidence|round(2) }}">
+                                    {{ latest_classification.category }}
+                                </span>
+                            </td>
+                            <td>
+                                {% for tag in latest_classification.tags %}
+                                    <ins>{{ tag.name }}</ins>&nbsp;
+                                {% endfor %}
+                            </td>
+                        {% else %}
+                            <td colspan="2"><em>Ainda não classificado.</em></td>
+                        {% endif %}
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4">Nenhum comentário encontrado.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </figure>
+    </main>
+</body>
+</html>
