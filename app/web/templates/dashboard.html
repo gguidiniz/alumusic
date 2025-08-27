@@ -57,7 +57,7 @@
                 <tbody>
                     {% for comment in comments %}
                     <tr>
-                        <td>{{ comment.created_at.strftime('%d/%m/%y %H:%M') }}</td>
+                        <td>{{ comment.created_at | localdatetime }}</td>
                         <td>{{ comment.text }}</td>
                         {% if comment.classifications %}
                             {% set latest_classification = comment.classifications[-1] %}

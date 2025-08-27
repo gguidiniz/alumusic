@@ -4,6 +4,7 @@ from app.core.extensions import db, migrate, jwt, cache
 from app.web.routes import main_bp
 from app.cli import register_cli_commands
 from app.api.auth_routes import auth_bp
+from app.utils import format_datetime_local
 
 from app.api.comment_routes import api_bp
 
@@ -14,6 +15,8 @@ def create_app(settings_override=None):
         app.config.from_object(settings_override)
     else:
         app.config.from_object(default_settings)
+
+    app.jinja_env.filters['localdatetime'] = format_datetime_local
 
     db.init_app(app)
     migrate.init_app(app, db)
