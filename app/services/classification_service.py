@@ -62,7 +62,7 @@ def classify_comment(text: str) -> dict | None:
 
         return result_dict
     
-    except json.JsonDecodeError:
+    except json.JSONDecodeError:
         print(f"Erro: A resposta da LLM não é um json válido. Resposta: {response.text}")
         return None
     except Exception as e:

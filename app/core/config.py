@@ -17,4 +17,7 @@ class Settings:
     CACHE_TYPE = 'FileSystemCache'
     CACHE_DIR = 'instance/cache'
     CACHE_DEFAULT_TIMEOUT = 300
+
+    celery_broker_url: str = os.getenv("CELERY_BROKER_URL", 'redis://redis:6379/0')
+    result_backend: str = os.getenv("CELERY_RESULT_BACKEND", 'redis://redis:6379/0')
 settings = Settings()

@@ -1,12 +1,9 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
 from pydantic import ValidationError
-from concurrent.futures import ThreadPoolExecutor
 
-from app.schemas import CommentSchema, ClassificationResultSchema
-from app.services.classification_service import classify_comment
-from app.repositories.comment_repository import comment_repository
-from app.core.extensions import db
+from app.schemas import CommentSchema
+from app.tasks import process_and_save_comment
 
 api_bp = Blueprint('api', __name__, url_prefix='/api')
 
@@ -14,7 +11,6 @@ api_bp = Blueprint('api', __name__, url_prefix='/api')
 @jwt_required()
 def criar_comentario():
     json_data = request.get_json()
-
     if not json_data:
         return jsonify({"erro": "Requisição sem corpo JSON"}), 400
     
@@ -24,43 +20,13 @@ def criar_comentario():
     try:
         validated_comments = [CommentSchema.model_validate(item) for item in comments_to_process]
 
-        texts_to_classify = [comment.text for comment in validated_comments]
-        
-        classification_outputs = []
-        with ThreadPoolExecutor(max_workers=5) as executor:
-            classification_outputs = list(executor.map(classify_comment, texts_to_classify))
+        for comment in validated_comments:
+            process_and_save_comment.delay(comment.model_dump())
 
-        results = []
-        for comment_data, classification_output in zip(validated_comments, classification_outputs):
-            if not classification_output:
-                continue
+        return jsonify({"msg": f"{len(validated_comments)} comentários recebidos e enfileirados para processamento."}), 202
 
-            tags_output = classification_output.get("tags_funcionalidades", {})
-            result_obj = {
-                "comment_id": comment_data.id,
-                "category": classification_output.get("categoria", "CLASSIFICATION_ERROR"),
-                "confidence": classification_output.get("confianca", 0.0),
-                "tags": [{"tag": k, "explanation": v} for k, v in tags_output.items()]
-            }
-            validated_result = ClassificationResultSchema.model_validate(result_obj)
-
-            comment_repository.save_comment_classification(comment_data, validated_result)
-
-            results.append(validated_result)
-
-        db.session.commit()
-
-        if is_batch:
-            response_data = [res.model_dump(mode='json') for res in results]
-        else:
-            response_data = results[0].model_dump(mode='json') if results else {}
-
-        return jsonify(response_data), 200
-    
     except ValidationError as e:
-        db.session.rollback()
         return jsonify({"erro": "Dados inválidos", "detalhes": e.errors()}), 422
     except Exception as e:
-        db.session.rollback()
-        print(f"Erro inesperado: {e}")
-        return jsonify({"erro": "Ocorreu um erro interno no servidor"}), 500
+        print(f"Erro inesperado ao enfileirar tarefas: {e}")
+        return jsonify({"erro": "Ocorreu um erro interno no servidor ao enfileirar tarefas"}), 500
