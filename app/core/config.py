@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+from datetime import timedelta
 
 load_dotenv()
 
@@ -10,7 +11,7 @@ class Settings:
 
     JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY", "default_secret_key_for_dev")
     JWT_TOKEN_LOCATION = ["headers", "cookies"]
-
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=8)
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
 
     CACHE_TYPE = 'FileSystemCache'
