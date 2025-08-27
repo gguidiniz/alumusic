@@ -9,6 +9,7 @@ class Settings:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY", "default_secret_key_for_dev")
+    JWT_TOKEN_LOCATION = ["headers", "cookies"]
 
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
 

@@ -1,29 +1,30 @@
-from flask import Blueprint, request, jsonify
-from pydantic import ValidationError
+from flask import Blueprint, request, jsonify, redirect, url_for
 from app.models import User
-from app.schemas import AuthLoginSchema, TokenSchema
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, set_access_cookies
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
-    json_data = request.get_json()
-    if not json_data:
-        return jsonify({ "msg": "Corpo da requisição JSON ausente"}), 400
+    if request.is_json:
+        email = request.json.get('email', None)
+        password = request.json.get('password', None)
+    else:
+        email = request.form.get('email', None)
+        password = request.form.get('password', None)
+
+    if not email or not password:
+        return jsonify({"msg": "Email e senha são obrigatórios"}), 400
     
-    try:
-        login_data = AuthLoginSchema.model_validate(json_data)
+    user = User.query.filter_by(email=email).first()
 
-        user = User.query.filter_by(email=login_data.email).first()
+    if user and user.check_password(password):
+        access_token = create_access_token(identity=str(user.id))
 
-        if user and user.check_password(login_data.password):
-            access_token = create_access_token(identity=str(user.id))
+        response = redirect(url_for('main.dashboard_page'))
 
-            token_response = TokenSchema(access_token=access_token)
-            return token_response.model_dump(), 200
-        
-        return jsonify({"msg": "Credenciais inválidas"}), 401
+        set_access_cookies(response, access_token)
+
+        return response
     
-    except ValidationError as e:
-        return jsonify({"erro": "Dados de entrada inválidos", "detalhes": e.errors()}), 422
+    return redirect(url_for('main.login_page'))

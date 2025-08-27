@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AluMusic - Login</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+</head>
+<body>
+    <main class="container" style="max_width: 500px; margin-top: 5vh;">
+        <article>
+            <header>
+                <h2>Login - Painel de Curadoria</h2>
+            </header>
+
+            <form action="/api/auth/login" method="POST">
+                <label for="email">Email</label>
+                <input type="email" name="email" placeholder="seu@email.com" required>
+
+                <label for="password">Senha</label>
+                <input type="password" id="password" name="password" required>
+
+                <button type="submit">Entrar</button>
+            </form>
+        </article>
+    </main>
+</body>
+</html>
