@@ -46,6 +46,14 @@ def get_llm_prompt(text: str) -> str:
     return prompt
 
 def classify_comment(text: str) -> dict | None:
+    if settings.MOCK_AI_SERVICE:
+        print("--- MODO MOCK ATIVADO: Retornando resposta simulada ---")
+        return {
+            "categoria": "MOCK",
+            "tags_funcionalidades": { "mock_tag": "Essa é uma resposta simulada."},
+            "confianca": 1.0
+        }
+    
     if not text:
         return None
     

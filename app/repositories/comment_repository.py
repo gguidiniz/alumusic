@@ -1,3 +1,4 @@
+from sqlalchemy.exc import IntegrityError
 from app.core.extensions import db
 from app.models import Comment, Classification, Tag
 from app.schemas import CommentSchema, ClassificationResultSchema
@@ -8,7 +9,6 @@ class CommentRepository:
         comment_data: CommentSchema,
         classification_result: ClassificationResultSchema
     ) -> Comment:
-        
         comment = db.session.query(Comment).filter_by(external_id=str(comment_data.id)).first()
         if not comment:
             comment = Comment(
@@ -21,9 +21,17 @@ class CommentRepository:
         for tag_data in classification_result.tags:
             tag = db.session.query(Tag).filter_by(name=tag_data.tag).first()
             if not tag:
-                tag = Tag(name=tag_data.tag, explanation=tag_data.explanation)
-                db.session.add(tag)
-            tags_to_associate.append(tag)
+                try:
+                    with db.session.begin_nested():
+                        new_tag = Tag(name=tag_data.tag, explanation=tag_data.explanation)
+                        db.session.add(new_tag)
+                    
+                    tags_to_associate.append(new_tag)
+                except IntegrityError:
+                    tag = db.session.query(Tag).filter_by(name=tag_data.tag).first()
+                    tags_to_associate.append(tag)
+            else:
+                tags_to_associate.append(tag)
 
         new_classification = Classification(
             category=classification_result.category,
@@ -31,9 +39,8 @@ class CommentRepository:
             tags=tags_to_associate,
             comment=comment
         )
-
         db.session.add(new_classification)
-
+        
         return comment
     
     def get_latest_comments(self, page: int, per_page: int = 20):

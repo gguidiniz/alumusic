@@ -1,6 +1,6 @@
-import os
 from celery import Celery, Task
 from flask import Flask
+import os
 
 celery_app = Celery(
     "worker",
@@ -10,7 +10,7 @@ celery_app = Celery(
 )
 
 def init_celery(app: Flask):
-    celery_app.conf.update(app.config)
+    celery_app.conf.update(app.config.get("CELERY", {}))
 
     class FlaskTask(Task):
         def __call__(self, *args, **kwargs):
@@ -18,3 +18,4 @@ def init_celery(app: Flask):
                 return self.run(*args, **kwargs)
 
     celery_app.Task = FlaskTask
+    app.extensions["celery"] = celery_app

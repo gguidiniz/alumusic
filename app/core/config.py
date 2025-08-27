@@ -20,4 +20,6 @@ class Settings:
 
     celery_broker_url: str = os.getenv("CELERY_BROKER_URL", 'redis://redis:6379/0')
     result_backend: str = os.getenv("CELERY_RESULT_BACKEND", 'redis://redis:6379/0')
+
+    MOCK_AI_SERVICE: bool = os.getenv("MOCK_AI_SERVICE", "false").lower() in ('true', '1', 't')
 settings = Settings()
