@@ -22,16 +22,17 @@ def login_page():
 @main_bp.route('/dashboard')
 @jwt_required()
 def dashboard_page():
+    page = request.args.get('page', 1, type=int)
     search_term = request.args.get('q', None)
 
     if search_term:
-        comments_list = comment_repository.search_comments(search_term)
+        pagination = comment_repository.search_comments(search_term, page=page)
     else:
-        comments_list = comment_repository.get_latest_comments()
+        pagination = comment_repository.get_latest_comments(page=page)
 
     return render_template(
         'dashboard.html',
-        comments=comments_list,
+        pagination=pagination,
         search_term=search_term
     )
 

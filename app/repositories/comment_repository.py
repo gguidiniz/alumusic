@@ -36,15 +36,14 @@ class CommentRepository:
 
         return comment
     
-    def get_latest_comments(self, limit: int = 20):
+    def get_latest_comments(self, page: int, per_page: int = 20):
         return (
             db.session.query(Comment)
             .options(
                 db.joinedload(Comment.classifications).joinedload(Classification.tags)
             )
             .order_by(Comment.created_at.desc())
-            .limit(limit)
-            .all()
+            .paginate(page=page, per_page=per_page, error_out=False)
         )
     
     def get_all_comments_with_latest_classification(self):
@@ -57,21 +56,15 @@ class CommentRepository:
             .all()
         )
     
-    def search_comments(self, search_term: str, limit: int = 20):
+    def search_comments(self, search_term: str, page: int, per_page: int = 20):
         query = (
             db.session.query(Comment)
             .options(
                 db.joinedload(Comment.classifications).joinedload(Classification.tags)
             )
+            .filter(Comment.text.ilike(f"%{search_term}%"))
+            .order_by(Comment.created_at.desc())
         )
+        return query.paginate(page=page, per_page=per_page, error_out=False)
 
-        if search_term:
-            query = query.filter(Comment.text.ilike(f"%{search_term}%"))
-
-        return (
-            query.order_by(Comment.created_at.desc())
-            .limit(limit)
-            .all()
-        )
-    
 comment_repository = CommentRepository()

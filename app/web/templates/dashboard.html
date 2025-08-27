@@ -13,7 +13,7 @@
                 <li><strong>AluMusic Dashboard</strong></li>
             </ul>
             <ul>
-                <li><a href="/relatorio/semanal" target="_blank">Relatório Público</a></li>
+                <li><a href="{{ url_for('main.weekly_report') }}" target="_blank">Relatório Público</a></li>
                 <li><a href="{{ url_for('main.export_csv') }}" role="button" class="secondary">Exportar CSV</a></li>
             </ul>
         </nav>
@@ -22,24 +22,13 @@
             <h2>Últimos Comentários Recebidos</h2>
             <p>Visualizando os comentários e suas classificações mais recentes.</p>
         </hgroup>
-
+        
         <form action="{{ url_for('main.dashboard_page') }}" method="GET">
             <div class="grid" style="grid-template-columns: 1fr auto auto; gap: 0.5rem;">
-                <input 
-                    type="search" 
-                    id="search" 
-                    name="q" 
-                    placeholder="Buscar por palavra-chave..." 
-                    value="{{ search_term or '' }}"
-                    style="margin-bottom: 0;">
-
+                <input type="search" id="search" name="q" placeholder="Buscar por palavra-chave..." value="{{ search_term or '' }}" style="margin-bottom: 0;">
                 {% if search_term %}
-                    <a href="{{ url_for('main.dashboard_page') }}" 
-                    role="button" 
-                    class="secondary" 
-                    style="margin-bottom: 0;">Limpar Busca</a>
+                    <a href="{{ url_for('main.dashboard_page') }}" role="button" class="secondary" style="margin-bottom: 0;">Limpar Busca</a>
                 {% endif %}
-
                 <button type="submit" style="margin-bottom: 0;">Buscar</button>
             </div>
         </form>
@@ -49,13 +38,13 @@
                 <thead>
                     <tr>
                         <th scope="col">Data</th>
-                        <th scope="col">Comentários</th>
+                        <th scope="col">Comentário</th>
                         <th scope="col">Categoria</th>
                         <th scope="col">Tags</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for comment in comments %}
+                    {% for comment in pagination.items %}
                     <tr>
                         <td>{{ comment.created_at | localdatetime }}</td>
                         <td>{{ comment.text }}</td>
@@ -83,6 +72,26 @@
                 </tbody>
             </table>
         </figure>
+
+        <footer>
+            <nav>
+                <ul>
+                    {% if pagination.has_prev %}
+                        <li><a href="{{ url_for('main.dashboard_page', page=pagination.prev_num, q=search_term or None) }}">Página Anterior</a></li>
+                    {% endif %}
+                </ul>
+                <ul>
+                    {% if pagination.pages > 1 %}
+                        <li>Página {{ pagination.page }} de {{ pagination.pages }}.</li>
+                    {% endif %}
+                </ul>
+                <ul>
+                    {% if pagination.has_next %}
+                        <li><a href="{{ url_for('main.dashboard_page', page=pagination.next_num, q=search_term or None) }}">Próxima Página</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </footer>
     </main>
 </body>
 </html>
