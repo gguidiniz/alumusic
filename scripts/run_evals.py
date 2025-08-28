@@ -34,7 +34,7 @@ def run_evaluations():
         print("Nenhuma classificação foi bem-sucedida. Não é possível gerar o relatório.")
         return
     
-    report = classification_report(true_labels, predicted_labels)
+    report = classification_report(true_labels, predicted_labels, zero_division=0)
     print(report)
 
     print("--- Avaliação Concluída ---")
