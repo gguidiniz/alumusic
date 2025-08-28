@@ -117,7 +117,14 @@ class ReportService:
                 "data": [row.total for row in top_tags],
             },
             "over_time_chart": {
-                "labels": [datetime.strptime(row.date, '%Y-%m-%d').strftime('%d/%m') for row in comments_over_time],
+                "labels": [
+                    (
+                        datetime.strptime(row.date, '%Y-%m-%d').strftime('%d/%m')
+                        if isinstance(row.date, str)
+                        else row.date.strftime('%d/%m')
+                    )
+                    for row in comments_over_time
+                ],
                 "data": [row.total for row in comments_over_time],
             },
             "avg_confidence_chart": {
