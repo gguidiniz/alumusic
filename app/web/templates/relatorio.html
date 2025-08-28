@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AluMusic - Relatório Semanal</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"/>
+    <style>
+        .grid article {
+            display: flex;
+            flex-direction: column;
+        }
+        #topTagsChart {
+            min-height: 500px;
+        }
+    </style>
 </head>
 <body>
     <main class="container">
@@ -13,7 +22,7 @@
             <p>Análise dos feedbacks recebidos nos últimos 7 dias.</p>
         </header>
 
-        <grid>
+        <div class="grid">
             <article>
                 <header><strong>Categorias de Comentários</strong></header>
                 <canvas id="categoriesChart"></canvas>
@@ -22,6 +31,9 @@
                 <header><strong>Top 10 Tags Mais Mencionadas</strong></header>
                 <canvas id="topTagsChart"></canvas>
             </article>
+        </div>
+
+        <div class="grid">
             <article>
                 <header><strong>Evolução de Comentários (Últimos 7 dias)</strong></header>
                 <canvas id="overTimeChart"></canvas>
@@ -30,11 +42,14 @@
                 <header><strong>Confiança Média por Categoria</strong></header>
                 <canvas id="avgConfidenceChart"></canvas>
             </article>
+        </div>
+
+        <div class="grid">
             <article>
                 <header><strong>Top Tags por Categoria</strong></header>
                 <canvas id="tagsByCategoryChart"></canvas>
             </article>
-        </grid>
+        </div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
