@@ -1,7 +1,6 @@
 import pytest
 from flask.testing import FlaskClient
 from flask_jwt_extended import create_access_token
-from app.models import Comment
 
 def test_create_comment_api_success(test_client: FlaskClient, mocker):
     mock_task = mocker.patch('app.api.comment_routes.process_and_save_comment.delay')
