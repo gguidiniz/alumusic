@@ -1,4 +1,6 @@
 from sqlalchemy.exc import IntegrityError
+from datetime import datetime, timezone, timedelta
+
 from app.core.extensions import db
 from app.models import Comment, Classification, Tag
 from app.schemas import CommentSchema, ClassificationResultSchema
@@ -73,5 +75,15 @@ class CommentRepository:
             .order_by(Comment.created_at.desc())
         )
         return query.paginate(page=page, per_page=per_page, error_out=False)
+    
+    def get_comment_texts_from_last_week(self):
+        one_week_ago = datetime.now(timezone.utc) - timedelta(days=7)
+
+        comments = (
+            db.session.query(Comment.text)
+            .filter(Comment.created_at >= one_week_ago)
+            .all()
+        )
+        return [comment.text for comment in comments]
 
 comment_repository = CommentRepository()

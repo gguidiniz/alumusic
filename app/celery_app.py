@@ -1,4 +1,5 @@
 from celery import Celery, Task
+from celery.schedules import crontab
 from flask import Flask
 import os
 
@@ -19,3 +20,10 @@ def init_celery(app: Flask):
 
     celery_app.Task = FlaskTask
     app.extensions["celery"] = celery_app
+
+celery_app.conf.beat_schedule = {
+    'generate-weekly-summary-every-sunday': {
+        'task': 'app.tasks.generate_weekly_summary',
+        'schedule': crontab(hour=1, minute=0, day_of_week='sunday'),
+    },
+}
