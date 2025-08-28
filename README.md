@@ -19,7 +19,7 @@ Sistema que recebe, classifica, analise comentários utilizando LLM e gera um da
     git clone https://github.com/gguidiniz/alumusic.git
     ```
 
-2. Crie um arquivo .env a partir do .env.example, adicionando uma SECRET_KEY para o JWT e a sua chave da Gemini.
+2. Crie um arquivo .env a partir do .env.example, adicionando uma SECRET_KEY para o JWT e a sua chave da Gemini que pode ser obtida aqui `https://aistudio.google.com/apikey`.
 
 3. Construa e execute os containers em modo detached:
     ```sh
@@ -39,6 +39,10 @@ Sistema que recebe, classifica, analise comentários utilizando LLM e gera um da
 Antes de executar os testes e evals, entre crie um venv:
 ```sh
 python -m venv venv
+```
+Ative o ambiente virtual:
+```sh
+.\venv\Scripts\activate
 ```
 E instale as dependências do projeto:
 ```sh
