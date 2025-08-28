@@ -4,7 +4,7 @@ from app.core.extensions import db
 
 class TestConfig:
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+    SQLALCHEMY_DATABASE_URI = "sqlite:///./test.db" 
     JWT_SECRET_KEY = "test-secret-key"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     CACHE_TYPE = "SimpleCache"

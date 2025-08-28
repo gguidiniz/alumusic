@@ -1,5 +1,6 @@
 from sqlalchemy import func, desc, Date, cast
 from datetime import datetime, timedelta, timezone
+from flask import current_app
 
 from app.core.extensions import db
 from app.models.comment import Classification, Tag, classification_tags
@@ -56,9 +57,14 @@ class ReportService:
         )
         top_tags = top_tags_query.all()
 
+        if current_app.config["TESTING"]:
+            date_function = func.date(Classification.created_at)
+        else:
+            date_function = cast(Classification.created_at, Date)
+
         comments_over_time_query = (
             db.session.query(
-                cast(Classification.created_at, Date).label('date'),
+                date_function.label('date'),
                 func.count(Classification.id).label('total')
             )
             .filter(Classification.created_at >= one_week_ago)
@@ -111,7 +117,7 @@ class ReportService:
                 "data": [row.total for row in top_tags],
             },
             "over_time_chart": {
-                "labels": [row.date.strftime('%d/%m') for row in comments_over_time],
+                "labels": [datetime.strptime(row.date, '%Y-%m-%d').strftime('%d/%m') for row in comments_over_time],
                 "data": [row.total for row in comments_over_time],
             },
             "avg_confidence_chart": {

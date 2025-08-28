@@ -13,3 +13,5 @@ env/
 instance/
 
 celerybeat-schedule
+
+test.db
