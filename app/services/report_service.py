@@ -46,6 +46,17 @@ class ReportService:
         )
         comments_over_time = comments_over_time_query.all()
 
+        avg_confidence_query = (
+            db.session.query(
+                Classification.category,
+                func.avg(Classification.confidence).label('average_confidence')
+            )
+            .filter(Classification.created_at >= one_week_ago)
+            .group_by(Classification.category)
+            .order_by(desc('average_confidence'))
+        )
+        avg_confidence_by_category = avg_confidence_query.all()
+
         report_data = {
             "categories_chart": {
                 "labels": [row.category for row in category_counts],
@@ -58,6 +69,10 @@ class ReportService:
             "over_time_chart": {
                 "labels": [row.date.strftime('%d/%m') for row in comments_over_time],
                 "data": [row.total for row in comments_over_time],
+            },
+            "avg_confidence_chart": {
+                "labels": [row.category for row in avg_confidence_by_category],
+                "data": [round(row.average_confidence * 100, 2) for row in avg_confidence_by_category]
             }
         }
 

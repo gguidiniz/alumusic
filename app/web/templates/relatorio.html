@@ -26,6 +26,10 @@
                 <header><strong>Evolução de Comentários (Últimos 7 dias)</strong></header>
                 <canvas id="overTimeChart"></canvas>
             </article>
+            <article>
+                <header><strong>Confiança Média por Categoria</strong></header>
+                <canvas id="avgConfidenceChart"></canvas>
+            </article>
         </grid>
     </main>
 
@@ -92,6 +96,28 @@
             },
             options: {
                 responsive: true
+            }
+        });
+
+        const ctxAvgConfidence = document.getElementById('avgConfidenceChart');
+        new Chart(ctxAvgConfidence, {
+            type: 'bar',
+            data: {
+                labels: reportData.avg_confidence_chart.labels,
+                datasets: [{
+                    label: 'Confiança Média (%)',
+                    data: reportData.avg_confidence_chart.data,
+                    backgroundColor: '#8e44ad',
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
             }
         })
     </script>
