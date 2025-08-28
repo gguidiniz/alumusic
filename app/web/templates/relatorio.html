@@ -30,6 +30,10 @@
                 <header><strong>Confiança Média por Categoria</strong></header>
                 <canvas id="avgConfidenceChart"></canvas>
             </article>
+            <article>
+                <header><strong>Top Tags por Categoria</strong></header>
+                <canvas id="tagsByCategoryChart"></canvas>
+            </article>
         </grid>
     </main>
 
@@ -119,7 +123,27 @@
                     }
                 }
             }
-        })
+        });
+
+        const ctxTagsByCategory = document.getElementById('tagsByCategoryChart');
+        const tagsByCategoryData = reportData.tags_by_category_chart.data;
+        new Chart(ctxTagsByCategory, {
+            type: 'bar',
+            data: {
+                labels: tagsByCategoryData.labels,
+                datasets: tagsByCategoryData.datasets
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: { stacked: true },
+                    y: { stacked: true }
+                },
+                plugins: {
+                    legend: { position: 'top' }
+                }
+            }
+        });
     </script>
 </body>
 </html>
