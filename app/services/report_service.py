@@ -19,6 +19,8 @@ class ReportService:
         )
         category_counts = category_counts_query.all()
 
+        print(f"[DEBUG NO SERVIÇO] Resultado da query de categorias: {category_counts}")
+
         top_tags_query = (
             db.session.query(
                 Tag.name,

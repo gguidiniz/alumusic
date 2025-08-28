@@ -3,6 +3,8 @@ from unittest.mock import MagicMock
 from app.services.classification_service import classify_comment
 
 def test_classify_comment_success(mocker):
+    mocker.patch('app.services.classification_service.settings.MOCK_AI_SERVICE', False)
+    
     test_text = "Eu adorei a melodia dessa música."
 
     fake_llm_response_text = json.dumps({

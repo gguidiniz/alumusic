@@ -1,5 +1,5 @@
 import pytest
-from app import create_app
+from main import create_app
 from app.core.extensions import db
 
 class TestConfig:
@@ -8,7 +8,10 @@ class TestConfig:
     JWT_SECRET_KEY = "test-secret-key"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-@pytest.fixture(scope='module')
+    CACHE_TYPE = "SimpleCache"
+    CACHE_DEFAULT_TIMEOUT = 300
+
+@pytest.fixture(scope='function')
 def test_client():
     flask_app = create_app(settings_override=TestConfig)
 
