@@ -7,16 +7,19 @@ class TestConfig:
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
     JWT_SECRET_KEY = "test-secret-key"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-
     CACHE_TYPE = "SimpleCache"
     CACHE_DEFAULT_TIMEOUT = 300
+    JWT_COOKIE_CSRF_PROTECT = False
 
 @pytest.fixture(scope='function')
-def test_client():
-    flask_app = create_app(settings_override=TestConfig)
+def app():
+    app = create_app(settings_override=TestConfig)
+    yield app
 
-    with flask_app.test_client() as testing_client:
-        with flask_app.app_context():
+@pytest.fixture(scope='function')
+def test_client(app):
+    with app.test_client() as testing_client:
+        with app.app_context():
             db.create_all()
             yield testing_client
             db.drop_all()
