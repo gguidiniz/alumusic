@@ -1,4 +1,4 @@
-from sqlalchemy import func, desc
+from sqlalchemy import func, desc, Date, cast
 from datetime import datetime, timedelta, timezone
 
 from app.core.extensions import db
@@ -19,7 +19,7 @@ class ReportService:
         )
         category_counts = category_counts_query.all()
 
-        print(f"[DEBUG NO SERVIÇO] Resultado da query de categorias: {category_counts}")
+
 
         top_tags_query = (
             db.session.query(
@@ -35,6 +35,17 @@ class ReportService:
         )
         top_tags = top_tags_query.all()
 
+        comments_over_time_query = (
+            db.session.query(
+                cast(Classification.created_at, Date).label('date'),
+                func.count(Classification.id).label('total')
+            )
+            .filter(Classification.created_at >= one_week_ago)
+            .group_by('date')
+            .order_by('date')
+        )
+        comments_over_time = comments_over_time_query.all()
+
         report_data = {
             "categories_chart": {
                 "labels": [row.category for row in category_counts],
@@ -43,6 +54,10 @@ class ReportService:
             "top_tags_chart": {
                 "labels": [row.name for row in top_tags],
                 "data": [row.total for row in top_tags],
+            },
+            "over_time_chart": {
+                "labels": [row.date.strftime('%d/%m') for row in comments_over_time],
+                "data": [row.total for row in comments_over_time],
             }
         }
 

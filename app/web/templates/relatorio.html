@@ -22,6 +22,10 @@
                 <header><strong>Top 10 Tags Mais Mencionadas</strong></header>
                 <canvas id="topTagsChart"></canvas>
             </article>
+            <article>
+                <header><strong>Evolução de Comentários (Últimos 7 dias)</strong></header>
+                <canvas id="overTimeChart"></canvas>
+            </article>
         </grid>
     </main>
 
@@ -73,6 +77,23 @@
                 responsive: true,
             }
         });
+
+        const ctxOverTime = document.getElementById('overTimeChart');
+        new Chart(ctxOverTime, {
+            type: 'line',
+            data: {
+                labels: reportData.over_time_chart.labels,
+                datasets: [{
+                    label: 'Nº de Comentários',
+                    data: reportData.over_time_chart.data,
+                    borderColor: '#f1c40f',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        })
     </script>
 </body>
 </html>
