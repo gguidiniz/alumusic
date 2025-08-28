@@ -1,0 +1,56 @@
+{
+	"info": {
+		"_postman_id": "9a8aff6d-05cc-46dd-aaac-bf2f0f0bf2ec",
+		"name": "Alu Music",
+		"description": "Utilize este documento para realizar requisições para o AluMusic",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "35015343"
+	},
+	"item": [
+		{
+			"name": "enviar comentario",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-CSRF-TOKEN",
+						"value": "{csrf_token_retornado_no_login}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"id\": \"{uuid}\",\r\n        \"text\": \"{comentario}\"\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost/api/comments"
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"{seuemail@mail.com}\",\r\n    \"password\": \"{suasenhaescolhida}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost/api/auth/login"
+			},
+			"response": []
+		}
+	]
+}
