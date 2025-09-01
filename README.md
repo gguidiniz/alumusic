@@ -26,6 +26,10 @@ Sistema que recebe, classifica, analise comentários utilizando LLM e gera um da
     docker-compose up --build -d
     ```
 
+4. Crie as tabelas no banco de dados:
+    ```sh
+    docker-compose exec app flask db upgrade
+    ```
 4. Crie um usuário para acessar o dashboard privado:
     ```sh
     docker-compose exec app flask create-user seu-email@exemplo.com sua-senha-forte
