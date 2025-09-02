@@ -5,6 +5,8 @@ from datetime import timedelta
 load_dotenv()
 
 class Settings:
+    SECRET_KEY: str = os.getenv("SECRET_KEY", "default_dev_secret_key")
+
     DATABASE_URL: str = os.getenv("DATABASE_URL", "")
     SQLALCHEMY_DATABASE_URI: str = os.getenv("DATABASE_URL", "")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
