@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template, Response, request
-from flask_jwt_extended import jwt_required
+from flask import Blueprint, render_template, Response, request, redirect, url_for
+from flask_jwt_extended import jwt_required, unset_jwt_cookies
 from app.services.report_service import report_service
 from app.core.extensions import cache
 from app.repositories.comment_repository import comment_repository
@@ -18,6 +18,15 @@ def weekly_report():
 @main_bp.route('/login', methods=['GET'])
 def login_page():
     return render_template('login.html')
+
+@main_bp.route('/logout')
+@jwt_required()
+def logout():
+    response = redirect(url_for('main.login_page'))
+
+    unset_jwt_cookies(response)
+
+    return response
 
 @main_bp.route('/dashboard')
 @jwt_required()
