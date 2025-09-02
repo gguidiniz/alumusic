@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, redirect, url_for
+from flask import Blueprint, request, jsonify, redirect, url_for, flash
 from app.models import User
 from app.schemas import TokenSchema
 from flask_jwt_extended import create_access_token, set_access_cookies
@@ -33,4 +33,5 @@ def login():
     if request.is_json:
         return jsonify({"msg": "Credenciais inválidas"}), 401
     else:
+        flash("Email ou senha inválidos. Por favor, tente novamente.", "error")
         return redirect(url_for('main.login_page'))

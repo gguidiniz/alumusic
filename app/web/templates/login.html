@@ -13,6 +13,16 @@
                 <h2>Login - Painel de Curadoria</h2>
             </header>
 
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div aria-invalid="true" style="padding: 0.75rem; margin-bottom: 1rem; text-align: center;">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+            
             <form action="/api/auth/login" method="POST">
                 <label for="email">Email</label>
                 <input type="email" name="email" placeholder="seu@email.com" required>
