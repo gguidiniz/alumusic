@@ -11,16 +11,13 @@
 			"name": "enviar comentario",
 			"request": {
 				"auth": {
-					"type": "noauth"
+					"type": "bearer",
+					"bearer": {
+						"token": ""
+					}
 				},
 				"method": "POST",
-				"header": [
-					{
-						"key": "X-CSRF-TOKEN",
-						"value": "{csrf_token_retornado_no_login}",
-						"type": "text"
-					}
-				],
+				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": "[\r\n    {\r\n        \"id\": \"{uuid}\",\r\n        \"text\": \"{comentario}\"\r\n    }\r\n]",

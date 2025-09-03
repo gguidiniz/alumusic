@@ -23,19 +23,19 @@ Sistema que recebe, classifica, analise comentários utilizando LLM e gera um da
 
 3. Construa e execute os containers em modo detached:
     ```sh
-    docker-compose up --build -d
+    docker compose up --build -d
     ```
 
 4. Crie as tabelas no banco de dados:
     ```sh
-    docker-compose exec app flask db upgrade
+    docker compose exec app flask db upgrade
     ```
-4. Crie um usuário para acessar o dashboard privado:
+5. Crie um usuário para acessar o dashboard privado:
     ```sh
-    docker-compose exec app flask create-user seu-email@exemplo.com sua-senha-forte
+    docker compose exec app flask create-user seu-email@exemplo.com sua-senha-forte
     ```
 
-5. A aplicação estará disponível em:
+6. A aplicação estará disponível em:
     * Relatório semanal: `http://localhost/relatorio/semanal`
     * Dashboard privado: `http://localhost/dashboard`
 
@@ -69,9 +69,9 @@ python -m scripts.run_evals
 
 1. Importe o arquivo `postman_collection` presente na raiz do projeto no seu Postman.
 2. Para a rota de **login**, edite o `email` e `senha` com as suas credenciais e faça a requisição.
-3. Copie o valor do `csrf_access_token` retornado no login.
+3. Copie o valor do `access_token` retornado no body do login.
 4. Para enviar um **comentário**, faça o POST para a rota de comentários:
-   - Substitua o token CSRF no cabeçalho `X-CSRF-TOKEN`.
+   - Substitua o token em `Authorization`.
    - Edite o body com um `uuid` e o `text` do comentário que deseja enviar.
 
 ## Decisões de design
