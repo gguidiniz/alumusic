@@ -1,4 +1,4 @@
-from .comment import Comment, Classification, Tag, WeeklySummary
+from .comment import Comment, Classification, Tag, WeeklySummary, classification_tags
 from .user import User
 
 __all__ = [
@@ -7,4 +7,5 @@ __all__ = [
     'Tag',
     'User',
     'WeeklySummary',
+    'classification_tags'
 ]
