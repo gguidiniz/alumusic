@@ -1,6 +1,7 @@
 import os
 import json
 import google.generativeai as genai
+from google.generativeai import GenerationConfig
 from app.core.config import settings
 
 try:
@@ -14,7 +15,7 @@ def get_llm_prompt(text: str) -> str:
     Analise o seguinte comentário de um ouvinte de música e classifique-o.
     O comentário é: "{text}"
 
-    Sua tarefa é retornar um objeto JSON, e NADA MAIS, com a seguinte estrutura:
+    Sua tarefa é retornar um objeto JSON, com a seguinte estrutura:
     {{
       "categoria": "...",
       "tags_funcionalidades": {{ "tag_1": "explicação", "tag_2": "explicação" }},
@@ -40,8 +41,6 @@ def get_llm_prompt(text: str) -> str:
           }}
 
     3.  **"confianca"**: Um valor de ponto flutuante (float) entre 0.0 e 1.0, indicando sua confiança na classificação da categoria.
-
-    Retorne APENAS o objeto JSON.
     """
     return prompt
 
@@ -60,19 +59,16 @@ def classify_comment(text: str) -> dict | None:
     try:
         model = genai.GenerativeModel('gemini-1.5-flash')
 
+        json_output_config = GenerationConfig(response_mime_type="application/json")
+
         prompt = get_llm_prompt(text)
 
-        response = model.generate_content(prompt)
+        response = model.generate_content(prompt, generation_config=json_output_config)
 
-        cleaned_response = response.text.strip().replace("```json", "").replace("```", "").strip()
-
-        result_dict = json.loads(cleaned_response)
+        result_dict = json.loads(response.text)
 
         return result_dict
     
-    except json.JSONDecodeError:
-        print(f"Erro: A resposta da LLM não é um json válido. Resposta: {response.text}")
-        return None
     except Exception as e:
         print(f"Ocorreu um erro inesperado ao chamar a API do Gemini: {e}")
         return None
